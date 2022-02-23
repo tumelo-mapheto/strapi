@@ -47,6 +47,26 @@ const GenericInput = ({
 
   const CustomInput = customInputs ? customInputs[type] : null;
 
+  function getErrorMessage(error) {
+    if (!error) {
+      return null;
+    }
+
+    if (typeof error === 'string') {
+      return formatMessage({ id: error, defaultMessage: error });
+    }
+
+    return formatMessage(
+      {
+        id: error.id,
+        defaultMessage: error?.defaultMessage ?? error.id,
+      },
+      { fieldName: formatMessage(intlLabel) }
+    );
+  }
+
+  const errorMessage = getErrorMessage(error);
+
   if (CustomInput) {
     return (
       <CustomInput
@@ -55,7 +75,7 @@ const GenericInput = ({
         disabled={disabled}
         intlLabel={intlLabel}
         labelAction={labelAction}
-        error={error}
+        error={errorMessage}
         name={name}
         onChange={onChange}
         options={options}
@@ -87,8 +107,6 @@ const GenericInput = ({
         { ...placeholder.values }
       )
     : '';
-
-  const errorMessage = error ? formatMessage({ id: error, defaultMessage: error }) : '';
 
   switch (type) {
     case 'bool': {
@@ -427,7 +445,13 @@ GenericInput.propTypes = {
     values: PropTypes.object,
   }),
   disabled: PropTypes.bool,
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      defaultMessage: PropTypes.string,
+    }),
+  ]),
   intlLabel: PropTypes.shape({
     id: PropTypes.string.isRequired,
     defaultMessage: PropTypes.string.isRequired,
