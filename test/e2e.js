@@ -46,6 +46,7 @@ const runAllTests = async args => {
     env: {
       FORCE_COLOR: 1,
       ENV_PATH: process.env.ENV_PATH,
+      JWT_SECRET: 'aSecret',
     },
   });
 };
