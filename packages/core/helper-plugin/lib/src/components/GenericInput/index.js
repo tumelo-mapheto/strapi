@@ -38,13 +38,15 @@ const GenericInput = ({
   required,
   step,
   type,
-  value,
+  value: defaultValue,
   isNullable,
   ...rest
 }) => {
   const { formatMessage } = useIntl();
   const [showPassword, setShowPassword] = useState(false);
-
+  // the API always returns null, which throws an error in React,
+  // therefore we cast this case to undefined
+  const value = defaultValue ?? undefined;
   const CustomInput = customInputs ? customInputs[type] : null;
 
   function getErrorMessage(error) {
@@ -127,7 +129,7 @@ const GenericInput = ({
 
       return (
         <ToggleInput
-          checked={value === null ? null : value || false}
+          checked={defaultValue === null ? null : defaultValue || false}
           disabled={disabled}
           hint={hint}
           label={label}
@@ -188,7 +190,7 @@ const GenericInput = ({
           onClear={() => onChange({ target: { name, value: null, type } })}
           placeholder={formattedPlaceholder}
           required={required}
-          value={value ? new Date(value) : null}
+          value={value && new Date(value)}
           selectedDateLabel={formattedDate => `Date picker, current is ${formattedDate}`}
         />
       );
@@ -234,12 +236,12 @@ const GenericInput = ({
           hint={hint}
           name={name}
           onValueChange={value => {
-            onChange({ target: { name, value, type } });
+            onChange({ target: { name, value: value ?? null, type } });
           }}
           placeholder={formattedPlaceholder}
           required={required}
           step={step}
-          value={value ?? undefined}
+          value={value}
         />
       );
     }
@@ -258,7 +260,7 @@ const GenericInput = ({
           placeholder={formattedPlaceholder}
           required={required}
           type="email"
-          value={value || ''}
+          value={value}
         />
       );
     }
@@ -279,7 +281,7 @@ const GenericInput = ({
           placeholder={formattedPlaceholder}
           required={required}
           type="text"
-          value={value || ''}
+          value={value}
         />
       );
     }
@@ -321,7 +323,7 @@ const GenericInput = ({
           placeholder={formattedPlaceholder}
           required={required}
           type={showPassword ? 'text' : 'password'}
-          value={value || ''}
+          value={value}
         />
       );
     }
@@ -340,7 +342,7 @@ const GenericInput = ({
           }}
           placeholder={formattedPlaceholder}
           required={required}
-          value={value || ''}
+          value={value}
         >
           {options.map(({ metadatas: { intlLabel, disabled, hidden }, key, value }) => {
             return (
@@ -366,7 +368,7 @@ const GenericInput = ({
           required={required}
           placeholder={formattedPlaceholder}
           type={type}
-          value={value || ''}
+          value={value}
         >
           {value}
         </Textarea>
@@ -433,7 +435,7 @@ GenericInput.defaultProps = {
   required: false,
   options: [],
   step: 1,
-  value: '',
+  value: undefined,
 };
 
 GenericInput.propTypes = {
