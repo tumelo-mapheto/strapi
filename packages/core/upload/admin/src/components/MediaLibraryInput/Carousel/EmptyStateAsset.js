@@ -26,7 +26,7 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
   };
 
   const handleDrop = e => {
-    e.preventDefault();
+    e.nativeEvent.preventDefault();
 
     if (e?.dataTransfer?.files) {
       const files = e.dataTransfer.files;
