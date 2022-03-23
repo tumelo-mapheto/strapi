@@ -26,7 +26,8 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
   };
 
   const handleDrop = e => {
-    e.nativeEvent.preventDefault();
+    e.preventDefault();
+    e.stopPropagation();
 
     if (e?.dataTransfer?.files) {
       const files = e.dataTransfer.files;
@@ -61,7 +62,10 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
       onClick={onClick}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
-      onDragOver={e => e.nativeEvent.preventDefault()}
+      onDragOver={e => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       onDrop={handleDrop}
       style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
     >
