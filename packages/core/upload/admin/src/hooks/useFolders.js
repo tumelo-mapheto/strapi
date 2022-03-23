@@ -4,21 +4,21 @@ import { useNotification, useQueryParams } from '@strapi/helper-plugin';
 import { useIntl } from 'react-intl';
 import { axiosInstance, getRequestUrl } from '../utils';
 
-export const useAssets = ({ skipWhen }) => {
+export const useFolders = ({ enabled = true }) => {
   const { formatMessage } = useIntl();
   const toggleNotification = useNotification();
   const { notifyStatus } = useNotifyAT();
   const [{ rawQuery }] = useQueryParams();
-  const dataRequestURL = getRequestUrl('files');
+  const dataRequestURL = getRequestUrl('folders');
 
-  const getAssets = async () => {
+  const fetchFolders = async () => {
     try {
       const { data } = await axiosInstance.get(`${dataRequestURL}${rawQuery}`);
 
       notifyStatus(
         formatMessage({
           id: 'list.asset.at.finished',
-          defaultMessage: 'The assets have finished loading.',
+          defaultMessage: 'The folders have finished loading.',
         })
       );
 
@@ -33,8 +33,8 @@ export const useAssets = ({ skipWhen }) => {
     }
   };
 
-  const { data, error, isLoading } = useQuery([`assets`, rawQuery], getAssets, {
-    enabled: !skipWhen,
+  const { data, error, isLoading } = useQuery([`folders`, rawQuery], fetchFolders, {
+    enabled,
     staleTime: 0,
     cacheTime: 0,
   });
