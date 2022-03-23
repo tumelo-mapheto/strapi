@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider, lightTheme } from '@strapi/design-system';
 import { IntlProvider } from 'react-intl';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act, waitFor } from '@testing-library/react';
 
 import { CreateFolderDialog } from '../CreateFolderDialog';
 
@@ -42,22 +42,33 @@ describe('CreateFolderDialog', () => {
     const spy = jest.fn();
     const { container } = setup({ onClose: spy });
 
-    fireEvent.click(getButton(container, 'cancel'));
+    act(() => {
+      fireEvent.click(getButton(container, 'cancel'));
+    });
+
     expect(spy).toBeCalledTimes(1);
   });
 
-  test('name is a required field', () => {
+  test('name is a required field', async () => {
     const spy = jest.fn();
     const { container } = setup({ onClose: spy });
     const name = getInput(container, 'name');
 
-    fireEvent.click(getButton(container, 'submit'));
+    act(() => {
+      fireEvent.click(getButton(container, 'submit'));
+    });
+
     expect(spy).toBeCalledTimes(0);
 
-    fireEvent.change(name, { target: { value: 'folder name' } });
-    fireEvent.click(getButton(container, 'submit'));
+    act(() => {
+      fireEvent.change(name, { target: { value: 'folder name' } });
+    });
 
-    expect(spy).toBeCalledTimes(1);
+    act(() => {
+      fireEvent.click(getButton(container, 'submit'));
+    });
+
+    await waitFor(() => expect(spy).toBeCalledTimes(1));
   });
 
   test('set default form values', () => {
