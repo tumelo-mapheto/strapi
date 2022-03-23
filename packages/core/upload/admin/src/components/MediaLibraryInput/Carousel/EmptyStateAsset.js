@@ -61,7 +61,7 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
       onClick={onClick}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
-      onDragOver={e => e.preventDefault()}
+      onDragOver={e => e.nativeEvent.preventDefault()}
       onDrop={handleDrop}
       style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
     >
